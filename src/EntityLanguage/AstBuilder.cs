@@ -4,44 +4,84 @@ using System.Linq;
 using System.Text;
 using Antlr4.Runtime.Tree;
 using EntityLanguage.Syntax;
+using Yargon.ATerms;
 
 namespace EntityLanguage
 {
-    public class AstBuilder : EntityLanguageBaseVisitor<object>
+    /// <summary>
+    /// Builds an AST from an ANTLR parse tree.
+    /// </summary>
+    public sealed class AstBuilder : EntityLanguageBaseVisitor<ITerm>
     {
-        public override object VisitStart(EntityLanguageParser.StartContext context)
+        /// <summary>
+        /// The term factory to use.
+        /// </summary>
+        private readonly ITermFactory termFactory;
+
+        #region Constructors
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AstBuilder"/> class.
+        /// </summary>
+        public AstBuilder(ITermFactory termFactory)
         {
-            return new Module()
-            {
-                Name = context.ID().GetText(),
-                Definitions = context.definition().Select(Visit).Cast<Entity>().ToList()
-            };
+            #region Contract
+            if (termFactory == null)
+                throw new ArgumentNullException(nameof(termFactory));
+            #endregion
+
+            this.termFactory = termFactory;
+        }
+        #endregion
+
+        /// <inheritdoc />
+        public override ITerm VisitStart(EntityLanguageParser.StartContext context)
+        {
+            #region Contract
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            #endregion
+
+            return this.termFactory.Cons("Module",
+                this.termFactory.String(context.ID().GetText()),
+                this.termFactory.List(context.definition().Select(Visit)));
         }
 
-        public override object VisitDefinition(EntityLanguageParser.DefinitionContext context)
+        /// <inheritdoc />
+        public override ITerm VisitDefinition(EntityLanguageParser.DefinitionContext context)
         {
-            return new Entity()
-            {
-                Name = context.ID().GetText(),
-                Properties = context.property().Select(Visit).Cast<Property>().ToList()
-            };
+            #region Contract
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            #endregion
+
+            return this.termFactory.Cons("Entity",
+                this.termFactory.String(context.ID().GetText()),
+                this.termFactory.List(context.property().Select(Visit)));
         }
 
-        public override object VisitProperty(EntityLanguageParser.PropertyContext context)
+        /// <inheritdoc />
+        public override ITerm VisitProperty(EntityLanguageParser.PropertyContext context)
         {
-            return new Property()
-            {
-                Name = context.ID().GetText(),
-                Type = (Type)Visit(context.type())
-            };
+            #region Contract
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            #endregion
+
+            return this.termFactory.Cons("Property",
+                this.termFactory.String(context.ID().GetText()),
+                Visit(context.type()));
         }
 
-        public override object VisitType(EntityLanguageParser.TypeContext context)
+        /// <inheritdoc />
+        public override ITerm VisitType(EntityLanguageParser.TypeContext context)
         {
-            return new Type()
-            {
-                Name = context.ID().GetText()
-            };
+            #region Contract
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+            #endregion
+
+            return this.termFactory.Cons("Type",
+                this.termFactory.String(context.ID().GetText()));
         }
     }
 }
