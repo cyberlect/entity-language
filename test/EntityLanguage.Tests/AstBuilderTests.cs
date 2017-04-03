@@ -5,7 +5,8 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Xunit;
 using EntityLanguage.Syntax;
-using Yargon.ATerms;
+using Yargon.Terms;
+using Yargon.Terms.ATerms;
 
 namespace EntityLanguage.Tests
 {
@@ -24,7 +25,13 @@ entity A {
 }
 
 entity B {}"));
-            var termFactory = new TrivialTermFactory();
+            var termFactory = new ATermFactory(new NullTermCache(), new Dictionary<Type, ATermFactory.TermConstructor>
+            {
+                [typeof(IModuleTerm)] = (f, s, a) => new ModuleATerm(f, (IStringTerm)s[0], (IListTerm<IEntityTerm>)s[1], a),
+                [typeof(IEntityTerm)] = (f, s, a) => new EntityATerm(f, (IStringTerm)s[0], (IListTerm<IPropertyTerm>)s[1], a),
+                [typeof(IPropertyTerm)] = (f, s, a) => new PropertyATerm(f, (IStringTerm)s[0], (ITypeTerm)s[1], a),
+                [typeof(ITypeTerm)] = (f, s, a) => new TypeATerm(f, (IStringTerm)s[0], a),
+            });
             var lexer = new EntityLanguageLexer(input);
             var tokens = new CommonTokenStream(lexer);
             var parser = new EntityLanguageParser(tokens);
@@ -35,25 +42,25 @@ entity B {}"));
 
             // Assert
             var expectedAst = 
-                termFactory.Cons("Module",
+                termFactory.Create<IModuleTerm>(
                     termFactory.String("X"),
                     termFactory.List(
-                        termFactory.Cons("Entity",
+                        termFactory.Create<IEntityTerm>(
                             termFactory.String("A"),
                             termFactory.List(
-                                termFactory.Cons("Property",
+                                termFactory.Create<IPropertyTerm>(
                                     termFactory.String("a"),
-                                    termFactory.Cons("Type", termFactory.String("A"))
+                                    termFactory.Create<ITypeTerm>(termFactory.String("A"))
                                 ),
-                                termFactory.Cons("Property",
+                                termFactory.Create<IPropertyTerm>(
                                     termFactory.String("b"),
-                                    termFactory.Cons("Type", termFactory.String("B"))
+                                    termFactory.Create<ITypeTerm>(termFactory.String("B"))
                                 )
                             )
                         ),
-                        termFactory.Cons("Entity",
+                        termFactory.Create<IEntityTerm>(
                             termFactory.String("B"),
-                            termFactory.List()
+                            termFactory.List<IPropertyTerm>()
                         )
                     )
                 );

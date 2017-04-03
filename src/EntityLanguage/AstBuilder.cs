@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Antlr4.Runtime.Tree;
 using EntityLanguage.Syntax;
-using Yargon.ATerms;
+using Yargon.Terms;
 
 namespace EntityLanguage
 {
@@ -41,9 +41,9 @@ namespace EntityLanguage
                 throw new ArgumentNullException(nameof(context));
             #endregion
 
-            return this.termFactory.Cons("Module",
+            return this.termFactory.Create<IModuleTerm>(
                 this.termFactory.String(context.ID().GetText()),
-                this.termFactory.List(context.definition().Select(Visit)));
+                this.termFactory.List(context.definition().Select(Visit).Cast<IEntityTerm>()));
         }
 
         /// <inheritdoc />
@@ -53,10 +53,10 @@ namespace EntityLanguage
             if (context == null)
                 throw new ArgumentNullException(nameof(context));
             #endregion
-
-            return this.termFactory.Cons("Entity",
+            
+            return this.termFactory.Create<IEntityTerm>(
                 this.termFactory.String(context.ID().GetText()),
-                this.termFactory.List(context.property().Select(Visit)));
+                this.termFactory.List(context.property().Select(Visit).Cast<IPropertyTerm>()));
         }
 
         /// <inheritdoc />
@@ -67,7 +67,7 @@ namespace EntityLanguage
                 throw new ArgumentNullException(nameof(context));
             #endregion
 
-            return this.termFactory.Cons("Property",
+            return this.termFactory.Create<IPropertyTerm>(
                 this.termFactory.String(context.ID().GetText()),
                 Visit(context.type()));
         }
@@ -80,7 +80,7 @@ namespace EntityLanguage
                 throw new ArgumentNullException(nameof(context));
             #endregion
 
-            return this.termFactory.Cons("Type",
+            return this.termFactory.Create<ITypeTerm>(
                 this.termFactory.String(context.ID().GetText()));
         }
     }

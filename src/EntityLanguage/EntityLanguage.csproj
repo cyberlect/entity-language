@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <PackageReference Include="Antlr4" Version="4.6.1-beta002" />
-    <PackageReference Include="Yargon.ATerms" Version="1.3.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,6 +25,11 @@
     <Compile Include="obj\Debug\netstandard1.4\EntityLanguageListener.cs" />
     <Compile Include="obj\Debug\netstandard1.4\EntityLanguageParser.cs" />
     <Compile Include="obj\Debug\netstandard1.4\EntityLanguageVisitor.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Yargon.Terms.ATerms\Yargon.Terms.ATerms.csproj" />
+    <ProjectReference Include="..\Yargon.Terms\Yargon.Terms.csproj" />
   </ItemGroup>
 
 </Project>
