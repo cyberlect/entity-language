@@ -30,31 +30,31 @@ namespace EntityLanguage
         {
             return Concat(Factory, Flatten(Factory, Factory.List(
                 Factory.List(Factory.String(
-                    "using System;\r\n" +
-                    "\r\n" +
-                    "namespace Entities\r\n" +
-                    "{\r\n")),
+                    "using System;" + Environment.NewLine +
+                    Environment.NewLine +
+                    "namespace Entities" + Environment.NewLine +
+                    "{" + Environment.NewLine)),
                 Map(Factory, module.Definitions, Generate),
                 Factory.List(Factory.String(
-                    "}\r\n")))
+                    "}" + Environment.NewLine)))
             ));
         }
 
         public IStringTerm Generate(IEntityTerm entity)
         {
             return Concat(Factory, Flatten(Factory, Factory.List(
-                Factory.List(Factory.String("\tpublic class "), entity.Name, Factory.String("\r\n"),
-                    Factory.String("\t{\r\n")),
+                Factory.List(Factory.String("\tpublic class "), entity.Name, Factory.String(Environment.NewLine),
+                    Factory.String("\t{" + Environment.NewLine)),
                 Map(Factory, entity.Properties, Generate),
                 Factory.List(Factory.String(
-                    "\t}\r\n")))
+                    "\t}" + Environment.NewLine)))
             ));
         }
 
         public IStringTerm Generate(IPropertyTerm entity)
         {
             return Concat(Factory, 
-                Factory.List(Factory.String("\t\tpublic "), entity.Type.Name, Factory.String(" "), entity.Name, Factory.String(";\r\n"))
+                Factory.List(Factory.String("\t\tpublic "), entity.Type.Name, Factory.String(" "), entity.Name, Factory.String(";" + Environment.NewLine))
             );
         }
 
