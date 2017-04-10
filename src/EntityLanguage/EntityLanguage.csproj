@@ -18,16 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="obj\Debug\netstandard1.4\EntityLanguage.AssemblyInfo.cs" />
-    <Compile Include="obj\Debug\netstandard1.4\EntityLanguageBaseListener.cs" />
-    <Compile Include="obj\Debug\netstandard1.4\EntityLanguageBaseVisitor.cs" />
-    <Compile Include="obj\Debug\netstandard1.4\EntityLanguageLexer.cs" />
-    <Compile Include="obj\Debug\netstandard1.4\EntityLanguageListener.cs" />
-    <Compile Include="obj\Debug\netstandard1.4\EntityLanguageParser.cs" />
-    <Compile Include="obj\Debug\netstandard1.4\EntityLanguageVisitor.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Yargon.Terms.ATerms\Yargon.Terms.ATerms.csproj" />
     <ProjectReference Include="..\Yargon.Terms\Yargon.Terms.csproj" />
   </ItemGroup>
