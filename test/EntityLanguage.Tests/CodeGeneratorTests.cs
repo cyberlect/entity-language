@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Xunit;
@@ -56,7 +57,8 @@ namespace Entities
 	}
 }
 ";
-            Assert.Equal(expectedString, result.Value);
+            var normalizedExpectedString = Regex.Replace(expectedString, @"\r\n|\n", Environment.NewLine);
+            Assert.Equal(normalizedExpectedString, result.Value);
         }
     }
 }
